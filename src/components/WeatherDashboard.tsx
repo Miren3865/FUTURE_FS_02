@@ -22,14 +22,11 @@ const WeatherDashboard: React.FC = () => {
   useEffect(() => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     setIsDarkMode(prefersDark);
-    
-    // Check if we have a previously searched location in localStorage
     const lastLocation = localStorage.getItem('lastLocation');
     if (lastLocation) {
       const parsedLocation = JSON.parse(lastLocation);
       fetchWeather(parsedLocation);
     } else {
-      // Try to get user's location
       getLocation();
     }
   }, []);
@@ -43,15 +40,11 @@ const WeatherDashboard: React.FC = () => {
   const fetchWeather = async (location: Location) => {
     setIsLoading(true);
     setError(null);
-    
     try {
       const weather = await fetchWeatherData(location, isMetric);
       setWeatherData(weather);
-      
       const forecast = await fetchForecastData(location, isMetric);
       setForecastData(forecast);
-      
-      // Save last searched location
       localStorage.setItem('lastLocation', JSON.stringify(location));
     } catch (err) {
       console.error('Error fetching weather:', err);
@@ -118,6 +111,27 @@ const WeatherDashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
+          {/* Quick Search Buttons */}
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Quick search:</span>
+            {[
+              { name: 'Surat', lat: 21.1702, lon: 72.8311 },
+              { name: 'Ahmedabad', lat: 23.0225, lon: 72.5714 },
+              { name: 'Nadiad', lat: 22.7000, lon: 72.8700 },
+              { name: 'Anand', lat: 22.5525, lon: 72.9552 },
+              { name: 'Rajkot', lat: 22.3039, lon: 70.8022 },
+              { name: 'Vadodara', lat: 22.3072, lon: 73.1812 },
+            ].map((city) => (
+              <button
+                key={city.name}
+                onClick={() => fetchWeather(city)}
+                className="px-3 py-1 text-sm rounded-full border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-slate-600 transition-colors text-gray-800 dark:text-gray-200"
+              >
+                {city.name}
+              </button>
+            ))}
+          </div>
+
           <SearchBar onSelectLocation={fetchWeather} onGetCurrentLocation={getLocation} />
           
           {isGeoLoading && !weatherData && (
@@ -203,7 +217,7 @@ const WeatherDashboard: React.FC = () => {
       
       <footer className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
         <p>Weather data provided by OpenWeatherMap</p>
-        <p className="mt-1">© {new Date().getFullYear()} Miren Savani. All Right Reserved</p>
+        <p className="mt-1">© {new Date().getFullYear()} Weather Dashboard</p>
       </footer>
     </div>
   );
