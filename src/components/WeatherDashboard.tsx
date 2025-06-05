@@ -216,8 +216,8 @@ const WeatherDashboard: React.FC = () => {
       </div>
       
       <footer className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
-        <p>Weather data provided by OpenWeatherMap</p>
         <p className="mt-1">© {new Date().getFullYear()} Miren Savani. All Rights Reserved.</p>
+        <p>Weather data provided by OpenWeatherMap</p>
       </footer>
     </div>
   );
